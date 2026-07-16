@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  PlanSeal 將 intent 與 repo reality 建構成一份 goal-traced、evidence-grounded、可由下一個 coding agent 直接執行的 canonical plan；在完成證據閉合前，不會假裝它已經 `Ready`。
+  PlanSeal 會先查證專案現況，再把「為什麼要做、要改成什麼、先做哪些工作、如何證明完成」整理成一份下一個 Agent 不必猜就能接手的技術計畫。
 </p>
 
 <p align="center">
@@ -18,160 +18,162 @@
 
 <p align="center">
   <a href="#快速開始">快速開始</a> ·
-  <a href="#一份-sealed-plan-包含什麼">輸出契約</a> ·
-  <a href="#核心運作方式">運作方式</a> ·
-  <a href="#安裝">安裝</a> ·
+  <a href="#你會拿到什麼">計畫內容</a> ·
+  <a href="#為什麼一般待辦清單不夠">為什麼需要</a> ·
+  <a href="#gore-為什麼是必要的">GORE</a> ·
+  <a href="#安裝-planseal">安裝</a> ·
   <a href="docs/TRUST.md">信任與安全</a>
 </p>
 
-| Goal-traced | Evidence-grounded | Verdict-gated |
-|---|---|---|
-| 每項 requirement、package 與 check 都透過必要 GORE 連回 actor outcome。 | Requirement、repo Fact、Decision、Inference、Assumption 與 Unknown 不會混成一團。 | 每份計畫明確結束為 `Ready`、`Needs Revision` 或 `Not Executable`，不使用模糊信心。 |
-
-> Plan 不是因為寫得很詳細就算 sealed。只有當 goal、decision、dependency、recovery path 與 completion evidence 都能閉合，才算準備好交付執行。
-
-**可以獨立使用。** Spectra、OpenSpec、Baton、subagent 與特定模型都能補強，但沒有任何一項是必要依賴。
-
 ## 快速開始
 
-在 Agent harness 使用的 skill 目錄中安裝固定版本：
-
-```bash
-git clone --branch v0.1.0 --depth 1 https://github.com/cablate/planseal.git planseal
-```
-
-接著要求建立計畫：
+把下面這段貼給已安裝 PlanSeal 的 Agent，再把引號裡的需求換成你要做的事：
 
 ```text
-使用 $planseal 檢查目前 repo，為 organization-scoped API keys
-建立一份可執行 implementation plan。不要實作 code。
+請使用 $planseal 檢查目前專案，為「新增組織層級 API 金鑰」建立一份可以直接執行的技術計畫。
+
+請先查證目前的程式碼、設定與測試，再整理：
+- 這項改動要解決什麼問題，以及哪些事情不在範圍內；
+- 現況與目標行為有什麼差異；
+- 工作該怎麼分、先後順序與相依關係；
+- 可能失敗的地方、回復方式與清理工作；
+- 每一部分要用什麼證據確認完成。
+
+查不到的地方不要猜，請標示未知事項與解決方法。
+不要實作，也不要修改任何檔案。最後只交付一份主計畫，並標示目前是 `Ready`、`Needs Revision` 或 `Not Executable`。
 ```
 
-PlanSeal 會選擇最小充分 profile、查證 current state、將 goals 追溯到 work packages 與 evidence，最後回傳一份 canonical plan 與 readiness verdict。
+還沒安裝 PlanSeal？請跳到[安裝](#安裝-planseal)。
 
-## 一份 sealed plan 包含什麼
+PlanSeal 會依改動規模決定計畫需要寫多深，查證目前狀況，把目標連到工作與驗收方式，最後只交付一份可以直接接手的主計畫。
 
-```text
-可觀察 outcome + scope + non-goals
-└── GORE：actor/job → product intent → goals
-    └── requirements + invariants
-        └── verified current state → target behavior
-            └── dependency-aware work packages
-                └── validation + rollback + cleanup
-                    └── traceability + readiness verdict
-```
-
-它是一份 executor-independent implementation contract，不是 task dump、planner transcript，也不是第二套規格系統。
-
-## Task list 不等於可執行計畫
-
-許多 AI 產生的 plan 看起來很完整，實際執行時卻仍要臨場發明：
-
-- 技術需求背後真正的使用者或營運成果；
-- 哪些 repo 敘述是已驗證 Fact，哪些只是 Assumption；
-- target behavior、public contract 與必須保留的 invariant；
-- package dependency、平行邊界與集中整合點；
-- failure、rollback、migration、cleanup 與 handoff；
-- 哪些 evidence 能證明成果，而不只是證明 code 可以編譯。
-
-PlanSeal 將 plan 視為 **executor-independent contract**，不是 planner 推理過程的逐字稿。只有當 material goals、decisions、unknowns、dependencies 與 evidence 都足以讓實作者直接開始，才會判定為 Ready。
-
-## 它改變了什麼
-
-| 沒有 PlanSeal | 使用 PlanSeal |
-|---|---|
-| 把技術動作當作目標 | 由 actor outcome 與 product intent 帶領技術工作 |
-| Requirement、Fact、Inference 與 Assumption 混在一起 | 證據分類，並連到穩定 repo anchor |
-| 用檔案清單假裝是 implementation design | 說明 baseline、target behavior、ownership、state 與 failure path |
-| 依照文字直覺排序 task | 建立有 artifact 與 integration owner 的 dependency DAG |
-| Unknown 藏到 implementation 中途 | 提前轉成 decision、spike 或 preflight gate |
-| Build／typecheck 通過就宣稱完成 | 每個驗證都說明證明哪個 claim 與 outcome |
-| Review 另外產生一份問題報告 | 把 repair 整合回同一份 canonical plan |
-| 每份 plan 都自稱可執行 | 明確判定 `Ready`、`Needs Revision` 或 `Not Executable` |
-
-## 核心運作方式
-
-PlanSeal 要求七種必要成果，但不強迫 Agent 機械執行固定步驟：
-
-1. **Identity and outcome**：可觀察成果、scope、non-goals、invariants、owner、repo snapshot 與 freshness。
-2. **Mandatory GORE core**：actor／job、product intent、primary／supporting goals、quality guardrails、domain invariants 與 operationalization。
-3. **Grounded current state**：分開 Requirement、Fact、Decision、Inference、Assumption 與 Unknown。
-4. **Target behavior and design**：entrypoint、input、state、output、side effect、failure、recovery、ownership、compatibility 與 forbidden shortcut。
-5. **Executable work graph**：可獨立驗收的 packages、dependency DAG、scope anchors、handoff、rollback 與 Done When。
-6. **Triggered coverage and release path**：只有被觸發時才展開 security、data、UI、operations、migration、rollout、cutover、cleanup 與 deferred verification。
-7. **Rechecked canonical plan**：完成 forward／backward traceability 後，給出誠實 readiness verdict。
-
-當新增資料已不會改變排序、風險、驗證、回復策略或 verdict 時，停止繼續蒐證。
-
-## GORE 是必要核心
-
-PlanSeal 使用 Goal-Oriented Requirements Engineering 作為計畫的 why、boundary 與 traceability 層。每一種 profile 都必須保留：
-
-```text
-actor / job
-  → product intent
-  → primary and supporting goals
-  → requirement or invariant
-  → work package
-  → outcome evidence
-```
-
-GORE 不是第二份規格書，也不是為了產生儀式化圖表。Focused bug fix 可以用一列 compact chain 表達；migration 或多 owner change 才依真實 dependency 展開 goal hierarchy、conflict、continuity 與 decision ownership。
-
-## 四種 Plan Profile
-
-| Profile | 適用情況 | 必要深度 |
+| 目標有來由 | 現況有證據 | 能不能開始有明確答案 |
 |---|---|---|
-| **Focused** | 單一 bug、小型行為修正、局部設定 | Compact GORE、verified baseline／target、focused package、回歸 evidence、rollback |
-| **Standard** | 一般 feature、跨檔 refactor、API 或 UI flow | GORE core、behavior contract、DAG、triggered coverage、integration 與 cleanup |
-| **Migration** | Framework、platform、schema、storage、API version 或 data model 遷移 | Continuity、transition、cutover、compatibility、data movement、rollback 與 cleanup gates |
-| **Master** | 多 owner、surface、workspace、release 或集中整合 | 展開 goals、ownership／conflict map、parallel／serial tracks 與 integration governance |
+| 每項工作都能說明要替誰解決什麼問題。 | 已查證事實、推論、假設與未知事項會分開寫。 | 最後一定標示 `Ready`、`Needs Revision` 或 `Not Executable`。 |
 
-Profile 只控制展開深度，不決定是否需要 goal、evidence 或 readiness。
+> 一份計畫寫得再長，如果執行者仍得猜目標、先後順序、失敗時怎麼退回，或怎樣才算完成，就還不能交付。
 
-## Readiness Verdict
+## 你會拿到什麼
 
-| Verdict | 意義 |
-|---|---|
-| `Ready` | Material goals、decisions 與 unknowns 已關閉；goal → requirement → package → evidence 完整，可以開始 implementation |
-| `Needs Revision` | 已有 resolution path，但結果仍可能改變 target behavior、architecture、DAG、migration、release 或 acceptance |
-| `Not Executable` | 缺少必要 input、authority、ownership 或 safety boundary，連可靠 resolution path 都無法開始 |
-
-如果 discovery 結果仍可能推翻整體方向，即使 discovery task 本身可以執行，也不能把整份 plan 標為 Ready。
-
-## 獨立使用
-
-PlanSeal 不要求：
-
-- Spectra、OpenSpec 或其他規格框架；
-- 特定模型、agent runtime、IDE 或 orchestration system；
-- subagent 或平行執行；
-- planning 階段取得 repo write access。
-
-外部 artifact 與 specialist skill 可以提供 evidence，但最後交付物仍是一份自給自足的 canonical plan。
-
-PlanSeal 可以搭配 [Baton](https://github.com/cablate/baton)：PlanSeal 定義已準備好執行的工作；Baton 判斷是否派工以及如何派工。兩者都不互相依賴。
-
-## 與 GPT-5.6 Guidance 的關係
-
-PlanSeal 不綁模型，但其結構特別符合 [OpenAI GPT-5.6 prompt guidance](https://developers.openai.com/api/docs/guides/prompt-guidance-gpt-5p6) 的方向：先說明 outcome、重要 constraints、可用 evidence 與 completion bar，再讓模型選擇有效路徑。PlanSeal 將這些資訊轉成可跨 session 使用的 implementation contract。
-
-這代表設計方向一致，不代表 OpenAI 官方背書，也不代表只能使用 GPT-5.6。
-
-## 安裝
-
-### 由 Agent 規劃並等待批准
+一份可以直接交給下一個 Agent 的主計畫，至少包含：
 
 ```text
-Read https://raw.githubusercontent.com/cablate/planseal/v0.1.0/install/AGENT-INSTALL.md
-and prepare a plan to install PlanSeal as $planseal.
-
-Inspect my current skill directories first. Do not overwrite existing files.
-Show the source, destination, changed files, non-changes, and verification steps.
-Wait for my approval before writing anything.
+要帶來的結果、改動範圍與刻意不做的事
+└── 誰需要這個結果，以及為什麼
+    └── 必須做到的行為與不能破壞的規則
+        └── 已查證的現況與預期結果
+            └── 工作拆分、先後順序與負責範圍
+                └── 驗證、回復與清理方式
+                    └── 現在能不能開始執行
 ```
 
-安裝前可先檢查 [installation manifest](install/MANIFEST.md) 與 [trust boundary](docs/TRUST.md)。
+它不是待辦清單、Agent 的思考過程，也不是另一套規格文件。即使換人或換 Agent，也能照著同一份計畫繼續執行與驗收。
+
+## 為什麼一般待辦清單不夠
+
+很多 AI 產生的計畫看起來項目齊全，真正動手時，執行者仍得自己補答案：
+
+- 這項改動到底要替誰解決什麼問題；
+- 哪些現況已經查證，哪些只是推測；
+- 完成後應該出現什麼行為，哪些對外介面與既有規則不能被破壞；
+- 工作的先後關係，哪些能同時進行，最後由誰整合；
+- 發生錯誤時怎麼回復，遷移完成後還要清掉什麼；
+- 要看到哪些結果，才能證明需求真的完成。
+
+PlanSeal 的判準很直接：下一個執行者能不能在不必自行猜測的情況下開始。如果還不行，它就不會把計畫標成 `Ready`。
+
+## 和一般計畫有什麼不同
+
+| 一般計畫常見問題 | PlanSeal 的處理方式 |
+|---|---|
+| 一開始就列要改哪些檔案 | 先說清楚要替誰帶來什麼結果 |
+| 把查到的事和猜測混在一起 | 分開標示已查證事實、推論、假設與未知事項 |
+| 只列工作項目，不說完成後的行為 | 寫出現況、預期結果、影響範圍與失敗處理 |
+| 按文字順序排工作 | 根據真正的相依關係排序，標出能同時進行的部分 |
+| 把未知問題留到開工後 | 開工前先決定、調查或明確擋下 |
+| 編譯或測試通過就宣稱完成 | 驗證需求與實際使用結果是否達成 |
+| 審查後另外建立修正報告 | 把修正直接合回同一份主計畫 |
+| 每份計畫都說可以開始 | 明確標示現在可以開始、需要補齊，或目前無法執行 |
+
+## GORE 為什麼是必要的
+
+GORE 是 Goal-Oriented Requirements Engineering 的縮寫，可以理解為「從目標一路追到需求、工作與驗收」。
+
+PlanSeal 把它設為每份計畫的必要項，目的是避免計畫只剩下「改哪些程式碼」：
+
+```text
+誰需要什麼結果
+  → 這項改動要解決什麼問題
+  → 必須做到的行為與不能破壞的規則
+  → 哪些工作負責實現
+  → 用什麼證據證明完成
+```
+
+小型修正用一列就夠。只有遷移、多人協作或跨系統改動，才需要展開目標層級、衝突、服務延續與決策責任。GORE 不是第二份規格書，也不要求為了形式製作圖表。
+
+## 它怎麼工作
+
+Agent 可以自行選擇調查順序；交付前，以下七項缺一不可：
+
+1. **說清楚成果與範圍**：要達成什麼結果、哪些事情不在範圍內、哪些規則不能破壞，以及誰負責；同時記錄計畫依據的專案版本與查證時間。
+2. **建立 GORE 追溯鏈**：誰需要什麼結果、這項改動為什麼存在、主要與支援目標是什麼，以及每項工作如何連回目標與不可降低的品質要求。
+3. **查證目前狀況**：分開標示已查證事實、既有決定、推論、假設與未知事項。
+4. **定義完成後的行為**：從哪裡進入、接受什麼、狀態如何改變、輸出什麼、會影響什麼，以及失敗時如何回復；同時說清楚負責範圍、相容性與明確禁止的捷徑。
+5. **拆成可以驗收的工作**：標明每項工作對應的程式範圍、先後關係、可同時進行的部分、交接點、回復方式與完成條件。
+6. **補齊真的會遇到的風險**：只有確實涉及時，才展開安全、資料、介面、維運、遷移、發布、切換、清理，以及目前無法執行、必須延後的驗證。
+7. **重新檢查整份計畫**：確認能從目標一路追到工作與驗收，也能從每項工作反查它服務的目標，再判定現在能不能開始。
+
+當新查到的資料已不會改變工作順序、風險、驗證、回復方式或最後判定時，就停止繼續調查。
+
+## 依改動規模調整計畫深度
+
+| 計畫深度 | 適用情況 | 會寫到什麼程度 |
+|---|---|---|
+| **聚焦型（Focused）** | 單一錯誤、小型行為或設定修正 | 簡短 GORE 追溯鏈、已查證現況、預期結果、回歸驗證與回復方式 |
+| **標準型（Standard）** | 一般功能、跨檔案重構、API 或介面流程 | 完整行為、工作相依關係、整合責任、驗證與清理 |
+| **遷移型（Migration）** | 框架、平台、資料結構、儲存方式、API 版本或資料模型遷移 | 新舊並存、切換方式、相容性、資料搬移、回復與清理檢查點 |
+| **整合型（Master）** | 多人、多系統、多工作區或大型發布 | 展開目標、責任與衝突，安排同時或依序進行的工作，以及最後整合方式 |
+
+計畫深度只決定要寫多細；每份計畫仍須交代目標、證據及現在能不能開始。
+
+## 最後一定會說：現在能不能開始
+
+| 判定 | 代表什麼 |
+|---|---|
+| `Ready`（可以開始） | 關鍵目標、決定與未知事項都已處理，工作內容和驗收方式足以直接執行 |
+| `Needs Revision`（需要先補齊） | 已知道怎麼補，但缺少的答案仍可能改變設計、工作順序、遷移、發布或驗收方式 |
+| `Not Executable`（目前無法執行） | 缺少必要資料、權限、負責人或安全邊界，連可靠的第一步都無法決定 |
+
+如果調查結果仍可能推翻整體方向，就算「先做調查」本身可以執行，整份計畫也不能標成 `Ready`。
+
+## 更多用法
+
+### 審查並修復現有計畫
+
+```text
+請使用 $planseal 審查這份遷移計畫。把所有會影響執行的修正合回同一份主計畫，最後標示目前是 `Ready`、`Needs Revision` 或 `Not Executable`。
+```
+
+### 執行前重新檢查
+
+```text
+請使用 $planseal 根據目前專案重新檢查這份計畫，修正已過時或與現況不符的內容，並指出第一個可以開始的工作。
+```
+
+## 安裝 PlanSeal
+
+### 請 Agent 先規劃安裝
+
+```text
+請閱讀 https://raw.githubusercontent.com/cablate/planseal/v0.1.0/install/AGENT-INSTALL.md，
+並規劃如何把 PlanSeal 安裝為 $planseal。
+
+請先檢查目前的 Skill 目錄，不要覆蓋任何現有檔案。
+列出安裝來源、安裝位置、會變更的檔案、不會碰的檔案，以及驗證步驟。
+在我同意前，請不要寫入任何內容。
+```
+
+安裝前可先檢查[安裝檔案清單](install/MANIFEST.md)與[信任範圍](docs/TRUST.md)。
 
 ### 手動安裝
 
@@ -179,36 +181,39 @@ Wait for my approval before writing anything.
 git clone --branch v0.1.0 --depth 1 https://github.com/cablate/planseal.git planseal
 ```
 
-把 clone 後的資料夾放置或連結到 Agent harness 能探索 `SKILL.md` 的 skill 目錄。各產品的實際 discovery path 不同，請以當前官方文件為準。如果產品會快取 skill discovery，安裝後請開新 session，再執行 [smoke tests](install/SMOKE-TESTS.md)。
+把下載後的 `planseal` 資料夾放進 Agent 的 Skill 目錄，也就是它會尋找 `SKILL.md` 的位置。每個產品的安裝位置不同，請查閱該產品目前的官方文件。部分產品會暫存 Skill 清單；安裝後若找不到 PlanSeal，請開啟新的工作階段，再執行[基本安裝測試](install/SMOKE-TESTS.md)。
 
-真正給 AI 載入的入口是 [SKILL.md](SKILL.md)；README、release 與 install 文件是給人閱讀，不需要進入一般 runtime context。
+AI 實際載入的入口是 [SKILL.md](SKILL.md)。README、版本發布與安裝文件是給人閱讀的，一般執行時不必載入。
 
-## 更多使用方式
+## 不需要搭配其他工具
 
-審查並修復既有計畫：
+PlanSeal 可以單獨使用，不要求：
 
-```text
-使用 $planseal 審查這份 migration plan。把所有 material repair
-整合回一份 canonical plan，最後給出 readiness verdict。
-```
+- Spectra、OpenSpec 或其他規格框架；
+- 特定模型、編輯器或 Agent 執行環境；
+- 子 Agent、多人協作或平行派工；
+- 規劃階段就能修改專案。
 
-執行前重驗：
+其他文件與專用 Skill 可以協助補充證據，但最後仍只會留下同一份完整主計畫。
 
-```text
-使用 $planseal 依目前 repo preflight 這份 plan，修復 relevant drift，
-並指出第一個可以開始的 work package。
-```
+PlanSeal 可以搭配 [Baton](https://github.com/cablate/baton)：PlanSeal 負責把工作規劃到可以執行，Baton 負責決定要不要分派，以及如何分派。兩者都能獨立使用。
+
+## 為什麼適合交給 GPT-5.6 執行
+
+PlanSeal 不限定模型，但它要求計畫先說清楚預期結果、重要限制、可用證據與完成標準，再讓 Agent 決定最有效的執行路徑。這與 [OpenAI 的 GPT-5.6 Prompt 指南](https://developers.openai.com/api/docs/guides/prompt-guidance-gpt-5p6)提出的方向一致，因此特別適合把計畫交給 GPT-5.6 執行，也能用在其他模型。
+
+這代表設計方向一致，不代表 OpenAI 官方背書。
 
 ## 設計原則
 
-- **規劃 outcome，不是 activity。**
-- **每份計畫都保留真實 GORE chain。**
-- **Evidence 必須充分、新鮮並誠實分類。**
-- **只保留一份 canonical plan；外部 artifact 是 input，不是競爭的真相。**
-- **Unknown 必須在 implementation 依賴它之前變成 decision、spike 或 gate。**
-- **Work package 依 outcome、dependency、ownership、rollback 與 verification 切分，不依檔案數量。**
-- **完成要證明 actor outcome 與 invariant，不只證明 build artifact 存在。**
-- **有用的 plan 不一定 Ready；verdict 必須誠實。**
+- 計畫描述要達成的結果，不只列出工作動作。
+- 每份計畫都保留完整且真實的 GORE 追溯鏈。
+- 已查證事實、決定、推論、假設與未知事項必須分開。
+- 始終只保留一份主計畫；其他文件只用來提供證據。
+- 會卡住後續工作的未知事項，必須先決定、調查，或列為開始前必須完成的事項。
+- 工作依結果、相依關係、責任、回復方式與驗證方式拆分，不依檔案數量拆分。
+- 完成必須證明使用者需要的結果已經出現，不只是證明程式可以建置。
+- 一份計畫可能很有用，但仍未準備好執行；最後判定必須誠實。
 
 ## 授權
 
