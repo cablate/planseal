@@ -24,7 +24,7 @@ planseal/
 
 ## Human-facing repository files
 
-README files, license, changelog, release instructions, installation documentation, and trust documentation may remain in a Git clone but are not required in normal model context.
+README files, brand assets under `assets/`, license, changelog, release instructions, installation documentation, and trust documentation may remain in a Git clone but are not required in normal model context.
 
 ## Explicitly not installed or modified
 
