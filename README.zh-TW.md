@@ -1,13 +1,9 @@
 <p align="center">
-  <img src="assets/planseal-cover.png" alt="PlanSeal 將模糊意圖收斂成可追溯的執行圖與可驗證成果" width="100%">
+  <img src="assets/planseal-cover.jpg" alt="PlanSeal：不要只產生計畫，要證明它已可執行" width="100%">
 </p>
 
-<h1 align="center">PlanSeal</h1>
-
-<p align="center"><strong>把意圖封裝成可執行計畫。</strong></p>
-
 <p align="center">
-  一份具有 GORE 追溯、可由新 coding agent 直接開始、驗證、恢復與完成的 canonical plan，不依賴 planner 留在對話裡的隱藏推理。
+  多數 planning skill 負責產生計畫；PlanSeal 負責證明另一個 Agent 是否能安全執行，尚未 Ready 就不會蓋章。
 </p>
 
 <p align="center">

@@ -1,13 +1,9 @@
 <p align="center">
-  <img src="assets/planseal-cover.png" alt="PlanSeal turns ambiguous intent into a traceable execution graph and verified outcome" width="100%">
+  <img src="assets/planseal-cover.jpg" alt="PlanSeal — Don't just plan it. Prove it's ready." width="100%">
 </p>
 
-<h1 align="center">PlanSeal</h1>
-
-<p align="center"><strong>Seal intent into execution-ready plans.</strong></p>
-
 <p align="center">
-  One canonical, GORE-traced plan that a new coding agent can start, verify, resume, and finish—without depending on the planner's hidden reasoning.
+  Most planning skills generate a plan. PlanSeal proves whether another agent can safely execute it—and refuses to seal what is not ready.
 </p>
 
 <p align="center">
@@ -214,7 +210,7 @@ relevant drift and identify the first executable work package.
 ├── SKILL.md
 ├── VERSION
 ├── assets/
-│   └── planseal-cover.png
+│   └── planseal-cover.jpg
 ├── agents/
 │   └── openai.yaml
 ├── references/
