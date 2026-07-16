@@ -1,16 +1,71 @@
-# PlanSeal
+<p align="center">
+  <img src="assets/planseal-cover.png" alt="PlanSeal turns ambiguous intent into a traceable execution graph and verified outcome" width="100%">
+</p>
 
-**English** | [繁體中文](README.zh-TW.md)
+<h1 align="center">PlanSeal</h1>
 
-> **Seal intent into execution-ready plans.**
+<p align="center"><strong>Seal intent into execution-ready plans.</strong></p>
 
-PlanSeal is a planning skill for AI coding agents. It turns an implementation request, refactor, migration, architecture change, or incomplete plan into one grounded, traceable plan that a new executor can actually start, verify, resume, and finish.
+<p align="center">
+  One canonical, GORE-traced plan that a new coding agent can start, verify, resume, and finish—without depending on the planner's hidden reasoning.
+</p>
 
-[![GitHub stars](https://img.shields.io/github/stars/cablate/planseal?style=social)](https://github.com/cablate/planseal/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/cablate/planseal?style=social)](https://github.com/cablate/planseal/forks)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+<p align="center">
+  <a href="https://github.com/cablate/planseal/releases/latest"><img src="https://img.shields.io/github/v/release/cablate/planseal?display_name=tag&sort=semver" alt="Latest release"></a>
+  <a href="https://github.com/cablate/planseal/stargazers"><img src="https://img.shields.io/github/stars/cablate/planseal?style=social" alt="GitHub stars"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
+</p>
 
-[Install PlanSeal](#installation) · [Run the smoke tests](install/SMOKE-TESTS.md) · [Trust & security](docs/TRUST.md) · [Changelog](CHANGELOG.md)
+<p align="center">
+  <strong>English</strong> · <a href="README.zh-TW.md">繁體中文</a>
+</p>
+
+<p align="center">
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#what-a-sealed-plan-contains">Output contract</a> ·
+  <a href="#core-operating-model">How it works</a> ·
+  <a href="#installation">Install</a> ·
+  <a href="docs/TRUST.md">Trust &amp; security</a>
+</p>
+
+| Goal-traced | Evidence-grounded | Verdict-gated |
+|---|---|---|
+| Every requirement, package, and check connects to an actor outcome through mandatory GORE. | Requirements, repository facts, decisions, inferences, assumptions, and unknowns stay distinct. | A plan ends as `Ready`, `Needs Revision`, or `Not Executable`—never vague confidence. |
+
+> A plan is not sealed because it is detailed. It is sealed only when its goals, decisions, dependencies, recovery paths, and completion evidence close.
+
+**Works alone.** Spectra, OpenSpec, Baton, subagents, and specific models can help, but none is required.
+
+## Quick start
+
+Install the pinned release from the skill directory used by your agent harness:
+
+```bash
+git clone --branch v0.1.0 --depth 1 https://github.com/cablate/planseal.git planseal
+```
+
+Then ask for a plan:
+
+```text
+Use $planseal to inspect this repository and create an executable plan for
+adding organization-scoped API keys. Do not implement code.
+```
+
+PlanSeal will select the smallest sufficient profile, ground the current state, trace goals into work packages and evidence, and return one canonical plan with a readiness verdict.
+
+## What a sealed plan contains
+
+```text
+Observable outcome + scope + non-goals
+└── GORE: actor/job → product intent → goals
+    └── requirements + invariants
+        └── verified current state → target behavior
+            └── dependency-aware work packages
+                └── validation + rollback + cleanup
+                    └── traceability + readiness verdict
+```
+
+The result is an executor-independent implementation contract—not a task dump, a planner transcript, or a second specification system.
 
 ## A task list is not an executable plan
 
@@ -136,14 +191,7 @@ Place or link the cloned folder where your product discovers `SKILL.md` packages
 
 The runtime entrypoint is [SKILL.md](SKILL.md). README, release, and installation documents are human-facing and are not required in normal model context.
 
-## Usage
-
-Create a plan:
-
-```text
-Use $planseal to inspect this repository and create an executable plan for
-adding organization-scoped API keys. Do not implement code.
-```
+## More ways to use it
 
 Review and repair an existing plan:
 
@@ -165,6 +213,8 @@ relevant drift and identify the first executable work package.
 .
 ├── SKILL.md
 ├── VERSION
+├── assets/
+│   └── planseal-cover.png
 ├── agents/
 │   └── openai.yaml
 ├── references/

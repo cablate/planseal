@@ -1,16 +1,71 @@
-# PlanSeal
+<p align="center">
+  <img src="assets/planseal-cover.png" alt="PlanSeal 將模糊意圖收斂成可追溯的執行圖與可驗證成果" width="100%">
+</p>
 
-[English](README.md) | **繁體中文**
+<h1 align="center">PlanSeal</h1>
 
-> **把意圖封裝成可執行計畫。**
+<p align="center"><strong>把意圖封裝成可執行計畫。</strong></p>
 
-PlanSeal 是給 AI coding agent 使用的技術規劃 skill。它能把 implementation、refactor、migration、architecture change 或不完整的既有 plan，整理成一份新的執行者可以直接開始、逐包驗證、中斷後恢復並安全收尾的 canonical executable plan。
+<p align="center">
+  一份具有 GORE 追溯、可由新 coding agent 直接開始、驗證、恢復與完成的 canonical plan，不依賴 planner 留在對話裡的隱藏推理。
+</p>
 
-[![GitHub stars](https://img.shields.io/github/stars/cablate/planseal?style=social)](https://github.com/cablate/planseal/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/cablate/planseal?style=social)](https://github.com/cablate/planseal/forks)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+<p align="center">
+  <a href="https://github.com/cablate/planseal/releases/latest"><img src="https://img.shields.io/github/v/release/cablate/planseal?display_name=tag&sort=semver" alt="最新版本"></a>
+  <a href="https://github.com/cablate/planseal/stargazers"><img src="https://img.shields.io/github/stars/cablate/planseal?style=social" alt="GitHub stars"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
+</p>
 
-[安裝 PlanSeal](#安裝) · [執行 smoke tests](install/SMOKE-TESTS.md) · [信任與安全](docs/TRUST.md) · [版本紀錄](CHANGELOG.md)
+<p align="center">
+  <a href="README.md">English</a> · <strong>繁體中文</strong>
+</p>
+
+<p align="center">
+  <a href="#快速開始">快速開始</a> ·
+  <a href="#一份-sealed-plan-包含什麼">輸出契約</a> ·
+  <a href="#核心運作方式">運作方式</a> ·
+  <a href="#安裝">安裝</a> ·
+  <a href="docs/TRUST.md">信任與安全</a>
+</p>
+
+| Goal-traced | Evidence-grounded | Verdict-gated |
+|---|---|---|
+| 每項 requirement、package 與 check 都透過必要 GORE 連回 actor outcome。 | Requirement、repo Fact、Decision、Inference、Assumption 與 Unknown 不會混成一團。 | 每份計畫明確結束為 `Ready`、`Needs Revision` 或 `Not Executable`，不使用模糊信心。 |
+
+> Plan 不是因為寫得很詳細就算 sealed。只有當 goal、decision、dependency、recovery path 與 completion evidence 都能閉合，才算準備好交付執行。
+
+**可以獨立使用。** Spectra、OpenSpec、Baton、subagent 與特定模型都能補強，但沒有任何一項是必要依賴。
+
+## 快速開始
+
+在 Agent harness 使用的 skill 目錄中安裝固定版本：
+
+```bash
+git clone --branch v0.1.0 --depth 1 https://github.com/cablate/planseal.git planseal
+```
+
+接著要求建立計畫：
+
+```text
+使用 $planseal 檢查目前 repo，為 organization-scoped API keys
+建立一份可執行 implementation plan。不要實作 code。
+```
+
+PlanSeal 會選擇最小充分 profile、查證 current state、將 goals 追溯到 work packages 與 evidence，最後回傳一份 canonical plan 與 readiness verdict。
+
+## 一份 sealed plan 包含什麼
+
+```text
+可觀察 outcome + scope + non-goals
+└── GORE：actor/job → product intent → goals
+    └── requirements + invariants
+        └── verified current state → target behavior
+            └── dependency-aware work packages
+                └── validation + rollback + cleanup
+                    └── traceability + readiness verdict
+```
+
+它是一份 executor-independent implementation contract，不是 task dump、planner transcript，也不是第二套規格系統。
 
 ## Task list 不等於可執行計畫
 
@@ -132,14 +187,7 @@ git clone --branch v0.1.0 --depth 1 https://github.com/cablate/planseal.git plan
 
 真正給 AI 載入的入口是 [SKILL.md](SKILL.md)；README、release 與 install 文件是給人閱讀，不需要進入一般 runtime context。
 
-## 使用方式
-
-建立計畫：
-
-```text
-使用 $planseal 檢查目前 repo，為 organization-scoped API keys
-建立一份可執行 implementation plan。不要實作 code。
-```
+## 更多使用方式
 
 審查並修復既有計畫：
 
