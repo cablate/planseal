@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="assets/planseal-cover.jpg" alt="PlanSeal — Don't just plan it. Prove it's ready." width="100%">
+  <img src="assets/planseal-cover.jpg" alt="PlanSeal — Intent in. Execution-ready plan out." width="100%">
 </p>
 
 <p align="center">
-  Most planning skills generate a plan. PlanSeal proves whether another agent can safely execute it—and refuses to seal what is not ready.
+  PlanSeal turns intent and repository reality into one goal-traced, evidence-grounded plan the next coding agent can execute without guessing—and does not call it `Ready` until the proof closes.
 </p>
 
 <p align="center">

@@ -6,7 +6,7 @@ All notable changes to PlanSeal are documented here.
 
 ### Changed
 
-- Added a conversion-focused 2:1 PlanSeal campaign banner that frames the skill as an execution-readiness gate, remains legible in shared-link previews, and distinguishes sealed `Ready` plans from returned drafts.
+- Added a conversion-focused 2:1 PlanSeal campaign banner that leads with the create-first promise—intent and repository reality become an execution-ready plan—while keeping the readiness verdict as an internal quality guarantee.
 - Rebuilt both README openings around the product promise, three core guarantees, a 60-second quick start, and a concrete output contract.
 - Reduced repeated usage copy and made the relationship to optional frameworks, models, and companion skills visible before the detailed method.
 

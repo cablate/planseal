@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="assets/planseal-cover.jpg" alt="PlanSeal：不要只產生計畫，要證明它已可執行" width="100%">
+  <img src="assets/planseal-cover.jpg" alt="PlanSeal：輸入 intent，輸出 execution-ready plan" width="100%">
 </p>
 
 <p align="center">
-  多數 planning skill 負責產生計畫；PlanSeal 負責證明另一個 Agent 是否能安全執行，尚未 Ready 就不會蓋章。
+  PlanSeal 將 intent 與 repo reality 建構成一份 goal-traced、evidence-grounded、可由下一個 coding agent 直接執行的 canonical plan；在完成證據閉合前，不會假裝它已經 `Ready`。
 </p>
 
 <p align="center">
