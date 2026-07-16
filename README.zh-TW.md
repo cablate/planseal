@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/planseal-cover.jpg" alt="PlanSeal：輸入 intent，輸出 execution-ready plan" width="100%">
+  <img src="assets/planseal-cover.zh-TW.jpg" alt="PlanSeal：輸入意圖，輸出可執行計畫" width="100%">
 </p>
 
 <p align="center">

@@ -210,7 +210,8 @@ relevant drift and identify the first executable work package.
 ├── SKILL.md
 ├── VERSION
 ├── assets/
-│   └── planseal-cover.jpg
+│   ├── planseal-cover.jpg
+│   └── planseal-cover.zh-TW.jpg
 ├── agents/
 │   └── openai.yaml
 ├── references/
