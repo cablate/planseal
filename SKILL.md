@@ -56,6 +56,21 @@ description: >-
 
 沒有 repo 或 runtime 時，不把未查證現況寫成 Fact。若 discovery 結果可能改變 target behavior、DAG、資料安全、migration 或 release strategy，將計畫標為 Needs Revision，並把 discovery／spike 放在受影響 package 之前。
 
+## 控制首版範圍
+
+每份功能計畫都要標示 release intent：`MVP`、`production slice` 或 `platform foundation`。未指定時預設為 `production slice`，先交付最小但可正式使用的垂直切片。
+
+將候選工作分成 `release blocker`、`first-release value`、`hardening`、`future expansion`。首版只納入前兩類；後兩類可以記錄為 deferred scope，但除非 owner 明確提升優先級，不得轉成首版 work package。
+
+出現下列任一訊號時，加入 complexity checkpoint：
+
+- 同時新增超過一個核心 domain，或超過三張資料表；
+- 同時建立 public、user、admin 三套完整操作面；
+- 同時引入資料庫、外部儲存與部署責任；
+- 預估影響超過十個操作或五十個檔案。
+
+這些是提醒門檻，不是禁止線。先顯示新增範圍與較小方案，再由 owner 決定是否繼續並標記 Ready。不得只因治理、抽象或擴充能力「未來可能有用」就自動納入首版。
+
 ## 控制蒐證與停止
 
 依 [evidence-and-freshness.md](references/evidence-and-freshness.md) 的 Evidence Loop 蒐證。每批結果後判斷核心計畫是否已有足夠 evidence；足夠就停止。material fact 仍缺少時只使用一至兩個有意義的 fallback，之後標記 Unknown／Needs Revision；不要為措辭、例子或非必要背景繼續搜尋，也不要把空白結果解讀成「不存在」。
